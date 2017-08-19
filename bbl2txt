@@ -1,0 +1,33 @@
+#!/bin/bash
+bblfile=$1
+txtfile=$bblfile.txt
+cp $bblfile	$txtfile
+sed -i '/\\begin/d '   			$txtfile
+sed -i '/\\providecommand{/d '		$txtfile
+sed -i '/\\expandafter/d '		$txtfile
+sed -i '/\\bibitem/d '			$txtfile
+sed -i 's/\\emph//g '			$txtfile
+sed -i 's/\\penalty0//g '		$txtfile
+sed -i '/^\\newblock$/d'		$txtfile # To delete a line with only /newblock
+sed -i 's/{//g '			$txtfile
+sed -i 's/}//g '			$txtfile
+sed -i 's/\\natexlaba//g '		$txtfile
+sed -i 's/\\natexlabb//g '		$txtfile
+sed -i 's/~/ /g '			$txtfile
+sed -i '/^  $/d'			$txtfile
+sed -i '/^^\?$/d' 			$txtfile
+sed -i '/\\endthebibliography/d'	$txtfile
+
+sed -e :a -e '$!N;s/\n\\newblock/ /;ta' -e 'P;D'	$txtfile > tmp$txtfile
+mv tmp$txtfile $txtfile
+
+sed -e :a -e '$!N;s/\n  \?/ /;ta' -e 'P;D'		$txtfile > tmp$txtfile
+mv tmp$txtfile $txtfile
+
+bibnum=`cat $bblfile | grep bibitem | wc -l`
+txtnum=`cat $txtfile | wc -l `
+echo "$bblfile     has $bibnum /bibitem. "
+echo "$txtfile is generated with $txtnum references."
+exit 0
+
+
